@@ -1,25 +1,38 @@
 import Vue from 'vue'
-import Router from 'vue-router'
-import Home from './views/Home.vue'
+import VueRouter from 'vue-router'
+import Header from './views/Header.vue'
+import Footer from './views/Footer.vue'
+import Mplayer from './views/Mplayer.vue'
+import Main from './views/Main.vue'
+import List from './components/List.vue'
+import Lrc from './components/Lrc.vue'
 
-Vue.use(Router)
+Vue.use(VueRouter)
 
-export default new Router({
+export default new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: Home
-    },
-    {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
+      components: {
+        Header,
+        default: Main,
+        Footer,
+        mplayer: Mplayer
+      },
+      children: [
+        {
+          path: '',
+          name: 'list',
+          component: List
+        },
+        {
+          path: 'lrc?ulr=https://y.qq.com/portal/player.html',
+          name: 'lrc',
+          component: Lrc
+        }
+      ]
     }
   ]
 })
