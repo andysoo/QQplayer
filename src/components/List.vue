@@ -1,35 +1,46 @@
 <template>
-  <div ref="list">
-    <router-link :to="{name:'lrc'}" v-for="itam in songList" :key="itam.data.songmid" class="list" :songmid="itam.data.songmid">
-      {{itam.data.songname}}
-    </router-link>
+  <div>
+    <Table highlight-row ref="currentRowTable" :columns="columns" :data="songList" @on-row-click="handleRowChange"></Table>
   </div>
 </template>
 <script>
 import { mapState, mapMutations } from 'vuex'
 export default {
-  computed: {
-    ...mapState(['songList']),
-    list () {
-      return this.$refs.list
+  data () {
+    return {
+      columns: [
+        {
+          type: 'index',
+          width: 50,
+          align: 'center'
+        },
+        {
+          title: '歌名',
+          key: 'songname'
+        },
+        {
+          title: '出处',
+          key: 'albumdesc'
+        },
+        {
+          title: '歌手',
+          key: 'singer'
+        }
+      ]
     }
   },
-  methods: {
-    ...mapMutations(['playSongMid'])
+  computed: {
+    ...mapState(['songList', 'index'])
   },
-  mounted () {
-    this.list.onclick = (e) => {
-      console.log(e.target.getAttribute('songMid'))
-      this.playSongMid(e.target.getAttribute('songMid'))
+  methods: {
+    ...mapMutations(['chooseSong']),
+    handleRowChange (currentRow, index) {
+      this.chooseSong(index)
+      this.$router.push({
+        name: 'lrc',
+        query: { url: 'https://y.qq.com/portal/player.html' }
+      })
     }
   }
 }
 </script>
-<style lang="scss" scoped>
-.list {
-  height: 5rem;
-  line-height: 5rem;
-  font-size: 1.3rem;
-  display: flex;
-}
-</style>
