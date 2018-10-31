@@ -8,7 +8,7 @@
       <Slider :value="volume" @on-input="changeVolume"></Slider>
       </Col>
       <Col span="6" offset="1">
-      <div style="text-align:center;color:#2d8cf0">{{getSongName}}</div>
+      <div style="text-align:center;color:#2d8cf0">{{index+1}} {{getSongName}}</div>
       </Col>
       <Col span="3" offset="3">
       <span>{{ leftTime }}</span>
@@ -47,7 +47,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['volume', 'paused', 'mode']),
+    ...mapState(['volume', 'paused', 'mode', 'index']),
     ...mapGetters(['leftTime', 'currentPercentAbsoulte', 'getSongName'])
   },
   methods: {

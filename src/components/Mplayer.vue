@@ -4,19 +4,18 @@
   </div>
 </template>
 <script>
-import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
+import { mapState, mapMutations, mapGetters } from 'vuex'
 export default {
   name: 'Mplayer',
   computed: {
-    ...mapState(['paused', 'volume', 'changeTime', 'index', 'mode']),
+    ...mapState(['paused', 'volume', 'changeTime', 'index', 'mode', 'lyric']),
     ...mapGetters(['playList']),
     audio () {
       return this.$refs.audio
     }
   },
   methods: {
-    ...mapMutations(['getDuration', 'getCurrentTime', 'chooseSong']),
-    ...mapActions(['loadList']),
+    ...mapMutations(['getDuration', 'getCurrentTime', 'chooseSong', 'getLrc', 'changeLrcLoop']),
     loadedmetadata () {
       this.getDuration(this.audio.duration)
     },
@@ -33,6 +32,11 @@ export default {
       }
       if (this.mode.random) {
         this.chooseSong(Math.floor(Math.random() * 30) + 1)
+      }
+      if (this.mode.loop) {
+        this.audio.currentTime = 0
+        this.audio.play()
+        this.changeLrcLoop()
       }
     }
   },
@@ -57,13 +61,7 @@ export default {
   updated () {
     this.audio.oncanplay = () => {
       if (!this.paused) {
-        if (this.mode.loop) {
-          this.audio.loop = true
-        } else {
-          this.audio.loop = false
-        }
         this.audio.play()
-        // this.lyric.play()
         this.audio.volume = this.volume / 100
       }
     }

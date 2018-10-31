@@ -8,6 +8,7 @@ export default new Vuex.Store({
   state: {
     songList: [],
     loadList: false,
+    lrcLoop: false,
     paused: false,
     volume: 20,
     currentTime: 0,
@@ -18,8 +19,7 @@ export default new Vuex.Store({
       order: true,
       loop: false,
       random: false
-    },
-    lrc: ''
+    }
   },
   getters: {
     getSongName (state) {
@@ -92,6 +92,9 @@ export default new Vuex.Store({
       } else {
         state.index = 29
       }
+    },
+    changeLrcLoop (state) {
+      state.lrcLoop = !state.lrcLoop
     }
   },
   actions: {
@@ -114,19 +117,18 @@ export default new Vuex.Store({
         })
     },
     loadLrc ({ state }) {
-      let url = 'https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg?pcachetime=1540480621647&songmid=' + state.songMid + '&g_tk=5381&jsonpCallback=MusicJsonCallback_lrc&loginUin=0&hostUin=0&format=jsonp&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq&needNewCode=0'
-      console.log(url)
-      jsonp(url,
-        { name: 'MusicJsonCallback_lrc', timeout: 5000 },
-        (err, data) => {
-          if (data.lyric) {
-            let commContent = data.lyric.replace(/\s/g, '+')
-            let lyrics = Buffer.from(commContent, 'base64').toString()
-            console.log(err)
-            console.log(lyrics)
-          }
-        }
-      )
+      let l = state.songList.find(i => i.index === state.index)
+      if (l) {
+        let url = 'https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg?pcachetime=1540480621647&songmid=' + l.songmid + '&g_tk=5381&jsonpCallback=MusicJsonCallback_lrc&loginUin=0&hostUin=0&format=jsonp&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq&needNewCode=0'
+        return new Promise((resolve, reject) => {
+          jsonp(url,
+            { name: 'MusicJsonCallback_lrc', timeout: 5000 },
+            (err, data) => {
+              resolve(data)
+              reject(err)
+            })
+        })
+      }
     }
   }
 })
