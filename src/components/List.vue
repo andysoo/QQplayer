@@ -37,8 +37,7 @@ export default {
     handleRowChange (currentRow, index) {
       this.chooseSong(index)
       this.$router.push({
-        name: 'lrc',
-        query: { url: 'https://y.qq.com/portal/player.html' }
+        name: 'lrc'
       })
     }
   }

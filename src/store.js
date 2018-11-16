@@ -119,7 +119,7 @@ export default new Vuex.Store({
     loadLrc ({ state }) {
       let l = state.songList.find(i => i.index === state.index)
       if (l) {
-        let url = 'https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg?pcachetime=1540480621647&songmid=' + l.songmid + '&g_tk=5381&jsonpCallback=MusicJsonCallback_lrc&loginUin=0&hostUin=0&format=jsonp&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq&needNewCode=0'
+        let url = 'http://www.xiaomini.com.cn/lrc.php?songmid=' + l.songmid
         return new Promise((resolve, reject) => {
           jsonp(url,
             { name: 'MusicJsonCallback_lrc', timeout: 5000 },
