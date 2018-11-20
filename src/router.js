@@ -28,7 +28,14 @@ export default new VueRouter({
         {
           path: 'lrc',
           name: 'lrc',
-          component: Lrc
+          component: Lrc,
+          beforeEnter (to, from, next) {
+            if (from.name) {
+              next()
+            } else {
+              next({ name: 'list' })
+            }
+          }
         }
       ]
     }

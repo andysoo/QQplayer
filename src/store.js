@@ -7,9 +7,8 @@ export default new Vuex.Store({
   strict: process.env.NODE_ENV !== 'production',
   state: {
     songList: [],
-    loadList: false,
     lrcLoop: false,
-    paused: false,
+    paused: true,
     volume: 20,
     currentTime: 0,
     duration: 0,
@@ -19,11 +18,12 @@ export default new Vuex.Store({
       order: true,
       loop: false,
       random: false
-    }
+    },
+    src: ''
   },
   getters: {
     getSongName (state) {
-      if (state.loadList) {
+      if (state.songList.length) {
         let a = state.songList.find(i => i.index === state.index)
         return a.songname
       } else {
@@ -36,18 +36,19 @@ export default new Vuex.Store({
     currentPercentAbsoulte (state) {
       return state.currentTime / state.duration * 100
     },
-    playList (state) {
-      if (state.loadList) {
-        return state.songList.map((i) => i.songmid)
-      } else {
-        return new Array('')
+    musicSrc (state) {
+      if (state.src) {
+        return 'http://isure.stream.qqmusic.qq.com/' + state.src
       }
     }
+
   },
   mutations: {
-    gitList (state, list) {
+    changeSrc (state, src) {
+      state.src = src
+    },
+    getList (state, list) {
       state.songList = list
-      state.loadList = true
     },
     changeVolume (state, volume) {
       state.volume = volume
@@ -60,6 +61,9 @@ export default new Vuex.Store({
     },
     changeProgress (state, progress) {
       state.changeTime = progress * state.duration / 100
+    },
+    play (state) {
+      state.paused = false
     },
     playPause (state) {
       state.paused = !state.paused
@@ -101,20 +105,24 @@ export default new Vuex.Store({
     loadList ({ commit }) {
       let date = new Date().toISOString().slice(0, 10)
       let url = 'https://c.y.qq.com/v8/fcg-bin/fcg_v8_toplist_cp.fcg?tpl=3&page=detail&date=' + date + '&topid=4&type=top&song_begin=0&song_num=30&g_tk=5381&jsonpCallback=MusicJsonCallbacktoplist&loginUin=0&hostUin=0&format=jsonp&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq&needNewCode=0'
-      jsonp(url, { name: 'MusicJsonCallbacktoplist', timeout: 5000 },
-        (err, data) => {
-          let arr = data.songlist.map((i, index) => {
-            let obj = {}
-            obj.index = index
-            obj.songmid = i.data.songmid
-            obj.songname = i.data.songname
-            obj.albumdesc = i.data.albumdesc
-            obj.singer = i.data.singer.map(i => i.name).join('/')
-            return obj
+      return new Promise((resolve, reject) => {
+        jsonp(url, { name: 'MusicJsonCallbacktoplist', timeout: 5000 },
+          (err, data) => {
+            let arr = data.songlist.map((i, index) => {
+              let obj = {}
+              obj.index = index
+              obj.strMediaMid = i.data.strMediaMid
+              obj.songmid = i.data.songmid
+              obj.songname = i.data.songname
+              obj.albumdesc = i.data.albumdesc
+              obj.singer = i.data.singer.map(i => i.name).join('/')
+              return obj
+            })
+            commit('getList', arr)
+            resolve(arr)
+            reject(err)
           })
-          commit('gitList', arr)
-          if (err) throw err
-        })
+      })
     },
     loadLrc ({ state }) {
       let l = state.songList.find(i => i.index === state.index)
@@ -129,6 +137,37 @@ export default new Vuex.Store({
             })
         })
       }
+    },
+    loadMusicSrc ({ state, commit }, index) {
+      let data = {
+        req_0: {
+          module: 'vkey.GetVkeyServer',
+          method: 'CgiGetVkey',
+          param: {
+            guid: '5113582055',
+            songmid: [state.songList[index].songmid],
+            songtype: [0],
+            uin: '0',
+            loginflag: 1,
+            platform: '20'
+          }
+        },
+        comm: {
+          uin: 0,
+          format: 'json',
+          ct: 20,
+          cv: 0
+        }
+      }
+      data = escape(JSON.stringify(data))
+      jsonp(
+        'https://u.y.qq.com/cgi-bin/musicu.fcg?data=' + data,
+        { name: 'getplaysongvkey8173538000418177', timeout: 5000 },
+        (err, data) => {
+          commit('changeSrc', data.req_0.data.midurlinfo[0].purl)
+          if (err) throw err
+        }
+      )
     }
   }
 })

@@ -30,7 +30,7 @@ export default {
     Mplayer
   },
   methods: {
-    ...mapMutations(['gitList']),
+    ...mapMutations(['getList']),
     search () {
       let url = `https://c.y.qq.com/soso/fcgi-bin/client_search_cp?ct=24&qqmusic_ver=1298&new_json=1&remoteplace=txt.yqq.song&searchid=61199955446414145&t=0&aggr=1&cr=1&catZhida=1&lossless=0&flag_qc=0&p=1&n=20&w=${this.searchUTF8}&g_tk=5381&jsonpCallback=MusicJsonCallback05702011268360674&loginUin=0&hostUin=0&format=jsonp&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq&needNewCode=0`
       jsonp(url,
@@ -45,13 +45,15 @@ export default {
             obj.singer = i.singer.map(i => i.name).join('/')
             return obj
           })
-          this.gitList(arr)
+          this.getList(arr)
           if (err) throw err
-        })
+        }
+      )
+      this.$router.push({
+        name: 'list'
+      })
     }
   }
-  // MusicJsonCallback05702011268360674
-  // https://c.y.qq.com/soso/fcgi-bin/client_search_cp?ct=24&qqmusic_ver=1298&new_json=1&remoteplace=txt.yqq.song&searchid=61199955446414145&t=0&aggr=1&cr=1&catZhida=1&lossless=0&flag_qc=0&p=1&n=20&w=%E4%B8%9C%E8%A5%BF&g_tk=5381&jsonpCallback=MusicJsonCallback05702011268360674&loginUin=0&hostUin=0&format=jsonp&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq&needNewCode=0
 }
 
 </script>

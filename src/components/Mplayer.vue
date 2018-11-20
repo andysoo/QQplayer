@@ -1,6 +1,6 @@
 <template>
   <div>
-    <audio ref="audio" :src="`http://ws.stream.qqmusic.qq.com/C100${playList[index]}.m4a?fromtag=0&guid=126548448`" @loadedmetadata="loadedmetadata" @timeupdate="timeupdate"></audio>
+    <audio ref="audio" :src="musicSrc" @loadedmetadata="loadedmetadata" @timeupdate="timeupdate"></audio>
   </div>
 </template>
 <script>
@@ -9,7 +9,7 @@ export default {
   name: 'Mplayer',
   computed: {
     ...mapState(['paused', 'volume', 'changeTime', 'index', 'mode', 'lyric']),
-    ...mapGetters(['playList']),
+    ...mapGetters(['musicSrc']),
     audio () {
       return this.$refs.audio
     }
@@ -53,10 +53,15 @@ export default {
     },
     changeTime (val) {
       this.audio.currentTime = val
+    },
+    index (val) {
+      this.$store.dispatch('loadMusicSrc', val)
     }
   },
   created () {
     this.$store.dispatch('loadList')
+      .then((data) => { this.$store.dispatch('loadMusicSrc', 0) })
+      .catch(err => { throw err })
   },
   updated () {
     this.audio.oncanplay = () => {

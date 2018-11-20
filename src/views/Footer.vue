@@ -29,7 +29,7 @@
       <Button icon="ios-skip-backward" type="primary" shape="circle" @click="subIndex"></Button>
       </Col>
       <Col span="3">
-      <Button size="large" :icon="paused?'ios-pause':'ios-play'" type="primary" shape="circle" @click="playPause"></Button>
+      <Button size="large" :icon="paused?'ios-play':'ios-pause'" type="primary" shape="circle" @click="playPause"></Button>
       </Col>
       <Col span="3">
       <Button icon="ios-skip-forward" type="primary" shape="circle" @click="addIndex"></Button>

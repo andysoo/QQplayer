@@ -30,7 +30,7 @@ export default {
       this.lyric.stop()
       this.$store.dispatch('loadLrc')
         .then(data => this.base64(data))
-        .catch(err => console.log(err))
+        .catch(err => { throw err })
     },
     lrcLoop () {
       this.lyric.seek(0)
@@ -56,7 +56,7 @@ export default {
   created () {
     this.$store.dispatch('loadLrc')
       .then(data => this.base64(data))
-      .catch(err => console.log(err))
+      .catch(err => { throw err })
   }
 }
 </script>

@@ -33,9 +33,10 @@ export default {
     ...mapState(['songList', 'index'])
   },
   methods: {
-    ...mapMutations(['chooseSong']),
+    ...mapMutations(['chooseSong', 'play']),
     handleRowChange (currentRow, index) {
       this.chooseSong(index)
+      this.play()
       this.$router.push({
         name: 'lrc'
       })
