@@ -22,7 +22,7 @@ export default new Vuex.Store({
     src: ''
   },
   getters: {
-    getSongName(state) {
+    getSongName (state) {
       if (state.songList.length) {
         let a = state.songList.find(i => i.index === state.index)
         return a.songname
@@ -30,48 +30,48 @@ export default new Vuex.Store({
         return ''
       }
     },
-    leftTime(state) {
+    leftTime (state) {
       return formatTime(state.duration - state.currentTime)
     },
-    currentPercentAbsoulte(state) {
+    currentPercentAbsoulte (state) {
       return state.currentTime / state.duration * 100
     },
-    musicSrc(state) {
+    musicSrc (state) {
       if (state.src) {
-        return 'http://isure.stream.qqmusic.qq.com/' + state.src
+        return 'https://isure.stream.qqmusic.qq.com/' + state.src
       }
     }
 
   },
   mutations: {
-    changeSrc(state, src) {
+    changeSrc (state, src) {
       state.src = src
     },
-    getList(state, list) {
+    getList (state, list) {
       state.songList = list
     },
-    changeVolume(state, volume) {
+    changeVolume (state, volume) {
       state.volume = volume
     },
-    getDuration(state, duration) {
+    getDuration (state, duration) {
       state.duration = duration
     },
-    getCurrentTime(state, time) {
+    getCurrentTime (state, time) {
       state.currentTime = time
     },
-    changeProgress(state, progress) {
+    changeProgress (state, progress) {
       state.changeTime = progress * state.duration / 100
     },
-    play(state) {
+    play (state) {
       state.paused = false
     },
-    playPause(state) {
+    playPause (state) {
       state.paused = !state.paused
     },
-    chooseSong(state, index) {
+    chooseSong (state, index) {
       state.index = index
     },
-    changeMode(state) {
+    changeMode (state) {
       if (state.mode.order) {
         state.mode.order = !state.mode.order
         state.mode.loop = !state.mode.loop
@@ -83,26 +83,26 @@ export default new Vuex.Store({
         state.mode.order = !state.mode.order
       }
     },
-    addIndex(state) {
+    addIndex (state) {
       if (state.index < 29) {
         state.index++
       } else {
         state.index = 0
       }
     },
-    subIndex(state) {
+    subIndex (state) {
       if (state.index > 0) {
         state.index--
       } else {
         state.index = 29
       }
     },
-    changeLrcLoop(state) {
+    changeLrcLoop (state) {
       state.lrcLoop = !state.lrcLoop
     }
   },
   actions: {
-    loadList({ commit }) {
+    loadList ({ commit }) {
       let date = new Date().toISOString().slice(0, 10)
       let url = 'https://c.y.qq.com/v8/fcg-bin/fcg_v8_toplist_cp.fcg?tpl=3&page=detail&date=' + date + '&topid=4&type=top&song_begin=0&song_num=30&g_tk=5381&jsonpCallback=MusicJsonCallbacktoplist&loginUin=0&hostUin=0&format=jsonp&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq&needNewCode=0'
       return new Promise((resolve, reject) => {
@@ -124,7 +124,7 @@ export default new Vuex.Store({
           })
       })
     },
-    loadLrc({ state }) {
+    loadLrc ({ state }) {
       let l = state.songList.find(i => i.index === state.index)
       if (l) {
         let url = 'https://www.xiaomini.com.cn/lrc.php?songmid=' + l.songmid
@@ -138,7 +138,7 @@ export default new Vuex.Store({
         })
       }
     },
-    loadMusicSrc({ state, commit }, index) {
+    loadMusicSrc ({ state, commit }, index) {
       let data = {
         req_0: {
           module: 'vkey.GetVkeyServer',
