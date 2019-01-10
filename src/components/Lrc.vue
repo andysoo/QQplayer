@@ -56,7 +56,11 @@ export default {
   created () {
     this.$store.dispatch('loadLrc')
       .then(data => this.base64(data))
-      .catch(err => { throw err })
+      .catch(err => {
+        if (err) {
+          console.log('歌词加载失败')
+        }
+      })
   }
 }
 </script>

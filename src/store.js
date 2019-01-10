@@ -104,7 +104,7 @@ export default new Vuex.Store({
   actions: {
     loadList ({ commit }) {
       let date = new Date().toISOString().slice(0, 10)
-      let url = 'https://c.y.qq.com/v8/fcg-bin/fcg_v8_toplist_cp.fcg?tpl=3&page=detail&date=' + date + '&topid=4&type=top&song_begin=0&song_num=30&g_tk=5381&jsonpCallback=MusicJsonCallbacktoplist&loginUin=0&hostUin=0&format=jsonp&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq&needNewCode=0'
+      let url = 'https://szc.y.qq.com/v8/fcg-bin/fcg_v8_toplist_cp.fcg?tpl=3&page=detail&date=' + date + '&topid=4&type=top&song_begin=0&song_num=30&g_tk=5381&jsonpCallback=MusicJsonCallbacktoplist&loginUin=0&hostUin=0&format=jsonp&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq&needNewCode=0'
       return new Promise((resolve, reject) => {
         jsonp(url, { name: 'MusicJsonCallbacktoplist', timeout: 5000 },
           (err, data) => {
@@ -127,7 +127,7 @@ export default new Vuex.Store({
     loadLrc ({ state }) {
       let l = state.songList.find(i => i.index === state.index)
       if (l) {
-        let url = 'https://www.xiaomini.com.cn/lrc.php?songmid=' + l.songmid
+        let url = 'http://qp.xiaomini.com.cn/lrc.php?songmid=' + l.songmid
         return new Promise((resolve, reject) => {
           jsonp(url,
             { name: 'MusicJsonCallback_lrc', timeout: 5000 },
